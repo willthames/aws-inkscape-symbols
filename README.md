@@ -7,11 +7,6 @@ Download or clone this repository
 git clone https://github.com/willthames/aws-inkscape-symbols
 ```
 
-Install requirements (currently only ElementTree)
-```
-pip install -r requirements.txt
-```
-
 ## Generation of symbols
 
 Download the latest AWS Symbol set in EPS/SVG format
