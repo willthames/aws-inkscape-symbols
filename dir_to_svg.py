@@ -61,19 +61,8 @@ def read_component(filename):
     for rt in root.findall('{http://www.w3.org/2000/svg}title'):
       root.remove(rt)
     gcontainer = root
-    #gcontainer = root.find('{http://www.w3.org/2000/svg}g')
     if gcontainer is not None:
         component.extend(gcontainer)
-        """
-        for gelem in gcontainer.iter():
-            # only update leaf elements
-            if not list(gelem):
-                if 'style' in gelem.attrib:
-                    if 'stroke-width' not in gelem.attrib['style']:
-                        gelem.attrib['style'] += '; stroke-width: 1'
-                else:
-                    gelem.attrib['style'] = 'stroke-width: 1'
-        """
     return component
 
 
