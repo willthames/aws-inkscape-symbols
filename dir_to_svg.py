@@ -5,6 +5,7 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
+#FILENAME_PREFIX = r'^[^_]*_(?:.*)?'
 FILENAME_PREFIX = r'^[^_]*_(?:Amazon|AWS)?'
 
 DIR_TO_CATEGORY = {
@@ -49,10 +50,21 @@ def read_component(filename):
     component = ET.Element('symbol', attrib=dict(id=symbol_id))
     title = ET.SubElement(component, 'title')
     title.text = symbol_id
+    defs = root.find('{http://www.w3.org/2000/svg}defs')
+    if defs is not None:
+        for style in defs.iter():
+            component.extend(style)
     # Explicitly set stroke-width otherwise symbols can be
     # a little heavy
-    gcontainer = root.find('{http://www.w3.org/2000/svg}g')
+    for defs in root.findall('{http://www.w3.org/2000/svg}defs'):
+      root.remove(defs)
+    for rt in root.findall('{http://www.w3.org/2000/svg}title'):
+      root.remove(rt)
+    gcontainer = root
+    #gcontainer = root.find('{http://www.w3.org/2000/svg}g')
     if gcontainer is not None:
+        component.extend(gcontainer)
+        """
         for gelem in gcontainer.iter():
             # only update leaf elements
             if not list(gelem):
@@ -61,7 +73,7 @@ def read_component(filename):
                         gelem.attrib['style'] += '; stroke-width: 1'
                 else:
                     gelem.attrib['style'] = 'stroke-width: 1'
-        component.extend(gcontainer)
+        """
     return component
 
 
