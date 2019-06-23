@@ -6,21 +6,31 @@ import sys
 import xml.etree.ElementTree as ET
 
 #FILENAME_PREFIX = r'^[^_]*_(?:.*)?'
-FILENAME_PREFIX = r'^[^_]*_(?:Amazon|AWS)?'
+FILENAME_PREFIX = r'^(?:Amazon-|AWS-)'
 
 DIR_TO_CATEGORY = {
+    'AWS Cost Management': 'cost',
     'Game Development': 'game-dev',
+    'Game Tech': 'game-dev',
+    '_General': 'general',
+    '_Group Icons': 'group-icons',
+    'AR & VR': 'vr',
     'Management Tools': 'management',
+    'Management & Governance': 'management',
+    'Migration & Transfer': 'migration',
     'Networking & Content Delivery': 'network',
     'Application Services': 'application-services',
     'On Demand Workforce': 'workforce',
     'Artificial Intelligence': 'ai',
+    'Machine Learning': 'ai',
     'Desktop App Streaming': 'desktop',
-    'Business Productivity': 'productivity',
+    'Business Productivity': 'business',
+    'Business Applications': 'business',
     'Developer Tools': 'dev-tools',
     'Internet of Things': 'iot',
     'Mobile Services': 'mobile',
-    'Security Identity & Compliance': 'iam'
+    'Security Identity & Compliance': 'iam',
+    'Security, Identity, & Compliance': 'iam',
 }
 
 
@@ -44,6 +54,7 @@ def create_svg_file(componentname, filename, components):
 def read_component(filename):
     tree = ET.parse(filename)
     root = tree.getroot()
+    filename = os.path.basename(filename)
     filename = re.sub(FILENAME_PREFIX, '', filename).lower()
     filename = filename.replace('_', '-')
     symbol_id = filename[:-4]

@@ -9,7 +9,7 @@ git clone https://github.com/willthames/aws-inkscape-symbols
 
 ## Generation of symbols
 
-Download the latest AWS Symbol set in EPS/SVG format
+Download the latest AWS Symbol set in SVG format
 from the [AWS Simple Icons](https://aws.amazon.com/architecture/icons/)
 page
 
