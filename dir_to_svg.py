@@ -66,6 +66,17 @@ def read_component(filename):
     return component
 
 
+def read_subdir(srcdir):
+    components = list()
+    for maybe_filename in os.listdir(srcdir):
+        print("Maybe filename is {}".format(maybe_filename))
+        if not os.path.isdir(os.path.join(srcdir, maybe_filename)):
+            components.append(read_component(os.path.join(srcdir, maybe_filename)))
+        else:
+            new_srcdir = "{}/{}".format(srcdir, maybe_filename)  # not really a filename
+            components.extend(read_subdir(new_srcdir))
+    return components
+
 def main(args):
     ET.register_namespace('', 'http://www.w3.org/2000/svg')
     srcdir = args[0]
@@ -73,8 +84,9 @@ def main(args):
     destdir = args[1]
     componentname = DIR_TO_CATEGORY.get(subdir, subdir.lower())
     destfile = os.path.join(destdir, 'aws-%s.svg' % componentname)
-    components = [read_component(os.path.join(srcdir, filename))
-                  for filename in os.listdir(srcdir)]
+
+    components = read_subdir(srcdir)
+
     create_svg_file(componentname, destfile, components)
 
 
