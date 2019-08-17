@@ -5,6 +5,10 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
+TO_STRING_ENCODING = 'us-ascii'
+if sys.version_info.major == 3:
+    TO_STRING_ENCODING = 'unicode'
+
 #FILENAME_PREFIX = r'^[^_]*_(?:.*)?'
 FILENAME_PREFIX = r'^(?:Amazon-|AWS-)'
 
@@ -41,14 +45,14 @@ def create_svg_file(componentname, filename, components):
     tree = ET.parse(TEMPLATE_FILE)
     root = tree.getroot()
     title = root.find('{http://www.w3.org/2000/svg}title')
-    title.text = 'AWS ' + componentname
+    title.text = 'AWS {}'.format(componentname)
     desc = root.find('{http://www.w3.org/2000/svg}desc')
-    desc.text = 'AWS %s symbols' % componentname
+    desc.text = 'AWS {} symbols'.format(componentname)
     defs = root.find('{http://www.w3.org/2000/svg}defs')
     for component in components:
         defs.append(component)
     with open(filename, 'w') as out:
-        out.write(ET.tostring(root))
+        out.write(ET.tostring(root, encoding=TO_STRING_ENCODING))
 
 
 def read_component(filename):
@@ -82,7 +86,12 @@ def read_subdir(srcdir):
     for maybe_filename in os.listdir(srcdir):
         print("Maybe filename is {}".format(maybe_filename))
         if not os.path.isdir(os.path.join(srcdir, maybe_filename)):
-            components.append(read_component(os.path.join(srcdir, maybe_filename)))
+            _, ext = os.path.splitext(maybe_filename)
+            if ext == '.svg':
+                components.append(read_component(os.path.join(srcdir, maybe_filename)))
+            else:
+                print("Found a non-svg file skipping parsing of: {}".format(maybe_filename))
+                continue
         else:
             new_srcdir = "{}/{}".format(srcdir, maybe_filename)  # not really a filename
             components.extend(read_subdir(new_srcdir))
@@ -94,7 +103,7 @@ def main(args):
     subdir = os.path.basename(srcdir)
     destdir = args[1]
     componentname = DIR_TO_CATEGORY.get(subdir, subdir.lower())
-    destfile = os.path.join(destdir, 'aws-%s.svg' % componentname)
+    destfile = os.path.join(destdir, 'aws-{}.svg'.format(componentname))
 
     components = read_subdir(srcdir)
 
