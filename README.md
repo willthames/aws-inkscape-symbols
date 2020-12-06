@@ -9,7 +9,7 @@ git clone https://github.com/willthames/aws-inkscape-symbols
 
 ## Generation of symbols
 
-Download the latest AWS Symbol set in SVG format
+Download the latest Assets Package
 from the [AWS Simple Icons](https://aws.amazon.com/architecture/icons/)
 page
 
@@ -24,7 +24,7 @@ This will create all of the AWS symbols in the `target` subdirectory
 ## Using the symbols with inkscape
 
 Copy the symbol sets you require to your inkscape configuration
-directory (e.g. ~/.config/inkscape/symbols).
+directory (e.g. ~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/symbols)
 
 The bigger the symbol sets you use, the slower Inkscape seems to
 be to start up, so just add symbol sets as you need them (if you

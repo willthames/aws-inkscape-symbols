@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 PATH=$PATH:/sbin
 set -e
 
@@ -25,6 +25,22 @@ fi
 
 rm -rf $tempdir
 
-for dir in build/*; do
-  python dir_to_svg.py "$dir" target
+servicedir=$(ls -d build/AWS-Architecture-Service*)
+if [ -d "$servicedir/Arch_Developer- Tools" ]; then
+  mv "$servicedir/Arch_Developer- Tools" "$servicedir/Arch_Developer-Tools"
+fi
+
+for dir in build/AWS-Architecture-Resource*/*; do
+  componentname=$(basename $dir | sed 's/^Res_//' | tr 'A-Z_' 'a-z-')
+  lightfiles=$dir/Res_48_Light/*.svg
+  python files_to_svg.py $componentname target/aws-$componentname-resource-light.svg $lightfiles
+  darkfiles=$dir/Res_48_Dark/*.svg
+  python files_to_svg.py $componentname-dark target/aws-$componentname-resource-dark.svg $darkfiles
 done
+
+for dir in build/AWS-Architecture-Service*/*; do
+  componentname=$(basename $dir | sed 's/^Arch_//' | tr 'A-Z_' 'a-z-')
+  files=$dir/*48/*.svg
+  python files_to_svg.py $componentname target/aws-$componentname-service.svg $files
+done
+
