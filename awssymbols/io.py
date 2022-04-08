@@ -6,7 +6,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 FILENAME_PREFIX = r'^(?:Amazon-|AWS-)'
-FILENAME_SUFFIX = r'_[0-9][0-9](?:_light|_dark)?.svg'
+FILENAME_SUFFIX = r'_[0-9]*(?:_light|_dark)?\.svg'
 TEMPLATE_FILE = 'symbols_template.xml'
 
 
@@ -24,13 +24,9 @@ def create_svg_file(componentname, filename, components):
         out.write(ET.tostring(root))
 
 
-def read_component(filename):
-    tree = ET.parse(filename)
+def read_component(io, symbol_id: str):
+    tree = ET.parse(io)
     root = tree.getroot()
-    filename = os.path.basename(filename)
-    filename = re.sub(FILENAME_PREFIX, '', filename).lower()
-    filename = re.sub(FILENAME_SUFFIX, '', filename)
-    symbol_id = filename.replace('_', '-')
     component = ET.Element('symbol', attrib=dict(id=symbol_id))
     title = ET.SubElement(component, 'title')
     title.text = symbol_id
@@ -55,17 +51,3 @@ def read_component(filename):
     if gcontainer is not None:
         component.extend(gcontainer)
     return component
-
-
-def main(args):
-    ET.register_namespace('', 'http://www.w3.org/2000/svg')
-    componentname = args[0]
-    destfile = args[1]
-
-    components = [read_component(filename) for filename in args[2:]]
-
-    create_svg_file(componentname, destfile, components)
-
-
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
